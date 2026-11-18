@@ -108,7 +108,7 @@ textarea{min-height:140px;resize:vertical}
       <label>Paper color</label><div class="pick cl" id="cols"></div>
       <label>Add a song 🎵 (optional)</label>
       <input id="sl" placeholder="Song link (Spotify, YouTube, Apple Music, SoundCloud)" maxlength="300" style="margin-top:8px">
-      <label class="fileb" style="margin-top:8px"><input type="file" id="sf" accept="audio/*,.m4a,.mp4,.webm"><span id="sfn">🎧 Attach an audio clip (.m4a recommended, max 8 MB)</span></label>
+      <label class="fileb" style="margin-top:8px"><input type="file" id="sf" accept="audio/*,.m4a,.mp4,.webm"><span id="sfn">🎧 Attach an audio clip (mp3 or m4a, max 8 MB)</span></label>
       <div class="cnt">Recipients hear a 30-second preview. Please only share clips you have the right to share.</div>
       <button class="go big" id="bKirim">Send letter 🕊️</button>
       <div class="msg" id="mKirim">Your identity is never saved. Keep it kind, and no links please.</div>
@@ -119,6 +119,8 @@ textarea{min-height:140px;resize:vertical}
 <script>
 (function(){
   var $=function(i){return document.getElementById(i)};
+  var SB_URL="https://sbyphkaquoribzjbqvja.supabase.co",SB_KEY="sb_publishable_ZOG74XrcTdg3PHzcWPZJ0g_31WQHQZc"; // <- fill these in
+  function sb(p,o){o=o||{};o.headers=Object.assign({apikey:SB_KEY},SB_KEY.indexOf("eyJ")===0?{Authorization:"Bearer "+SB_KEY}:{},o.headers||{});return fetch(SB_URL+p,o)}
   var db=null,assets=null,canWrite=true,color="c1",stamp="💖",file=null,cur=null;
   var EM=["💖","🌸","🍀","⭐","🐱","🌈","🍓","🦋"],COLS=["c1","c2","c3","c4"];
   var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -136,21 +138,12 @@ textarea{min-height:140px;resize:vertical}
   function norm(s){return String(s||"").toLowerCase().replace(/\s+/g," ").trim()}
 
   $("sf").onchange=function(){var f=this.files[0];file=null;
-    if(!f){$("sfn").textContent="🎧 Attach an audio clip (.m4a recommended, max 8 MB)";return}
+    if(!f){$("sfn").textContent="🎧 Attach an audio clip (mp3 or m4a, max 8 MB)";return}
     if(f.size>8*1024*1024){$("sfn").textContent="That file is over 8 MB 🥺 Pick a smaller clip.";this.value="";return}
     file=f;$("sfn").textContent="🎧 "+f.name};
 
-  (async function(){
-    try{
-      for(var k=0;k<60&&!window.claude;k++)await new Promise(function(r){setTimeout(r,100)});
-      if(!window.claude)return noDb();
-      db=await claude.use("db");var u=await claude.use("user");
-      try{assets=await claude.use("assets")}catch(e){assets=null}
-      if(u&&u.can&&(await u.can("data.write"))===false)canWrite=false;
-      if(!db)noDb();else if(!canWrite){$("mKirim").textContent="Your account is read-only. Ask for Contributor access to send letters 🥺";$("bKirim").disabled=true}
-    }catch(e){noDb()}
-  })();
-  function noDb(){db=null;$("mCari").textContent="The database isn’t active here. Please open this page through its claude.ai link 🥺";$("mKirim").textContent="Sending isn’t available in this view 🥺 Open the page from its claude.ai link while logged in, then refresh.";$("bCari").disabled=true;$("bKirim").disabled=true}
+  if(SB_URL.indexOf("YOUR_")===0)noDb();else db=true;
+  function noDb(){db=null;$("mCari").textContent="The backend isn’t set up yet. Fill in SB_URL and SB_KEY in index.html 🥺";$("mKirim").textContent="Sending is off until the backend is set up 🥺";$("bCari").disabled=true;$("bKirim").disabled=true}
 
   function embedOf(link){try{var u=new URL(link),h=u.hostname,p=u.pathname,m;
     if(/(^|\.)youtube\.com$/.test(h)&&(m=u.searchParams.get("v")))return{s:"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(m)+"?autoplay=1&end=30&playsinline=1",h:200};
@@ -199,7 +192,7 @@ textarea{min-height:140px;resize:vertical}
       var m=document.createElement("div");m.className="meta";
       var sp=document.createElement("span");sp.textContent="💗 hope your day is lovely";
       var r=document.createElement("button");r.textContent="Report";
-      r.onclick=async function(ev){ev.stopPropagation();r.disabled=true;try{var ref=db.doc("letters/"+l.id);var s=await ref.get();var d=s.data();await ref.set(Object.assign({},d,{reports:(d.reports||0)+1}));r.textContent="Reported"}catch(x){r.textContent="Failed"}};
+      r.onclick=async function(ev){ev.stopPropagation();r.disabled=true;try{var rr=await sb("/rest/v1/rpc/report_letter",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({letter_id:l.id})});if(!rr.ok)throw 0;r.textContent="Reported"}catch(x){r.textContent="Failed"}};
       m.appendChild(sp);m.appendChild(r);pp.appendChild(inn);pp.appendChild(m);e.appendChild(tp);e.appendChild(pp);
       e.onclick=function(ev){var op=e.classList.toggle("open");if(op){burst(ev.clientX,ev.clientY,["💗","✨"]);var pw=inn.querySelector(".song");if(pw&&pw.auto)pw.auto()}};
       out.appendChild(e);
@@ -209,8 +202,8 @@ textarea{min-height:140px;resize:vertical}
   async function cari(){
     var name=$("q").value.trim();if(!name||!db)return;
     $("mCari").textContent="Peeking into the mailbox… 📮";$("hasil").textContent="";
-    try{var snap=await db.collection("letters").where("key","==",norm(name)).get();
-      var list=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x}).filter(function(x){return(x.reports||0)<3}).sort(function(a,b){return b.at-a.at});
+    try{var rs=await sb("/rest/v1/letters?select=*&name_key=eq."+encodeURIComponent(norm(name))+"&reports=lt.3&order=at.desc");if(!rs.ok)throw 0;var rows=await rs.json();
+      var list=rows.map(function(x){return{id:x.id,to:x.to_name,from:x.from_name,body:x.body,color:x.color,stamp:x.stamp,songUrl:x.song_url,songLink:x.song_link,at:x.at,reports:x.reports}});
       render(list,name);
     }catch(e){$("mCari").textContent="Couldn’t load letters. Please try again 🥺"}
   }
@@ -224,17 +217,17 @@ textarea{min-height:140px;resize:vertical}
     $("bKirim").disabled=true;var x=ev.clientX,y=ev.clientY,songUrl="";
     try{
       if(file){
-        if(!assets){m.textContent="Song uploads aren’t available for your account. Send without the clip, or ask for Contributor access 🥺";$("bKirim").disabled=false;return}
+        
         m.textContent="Uploading your song… 🎧";
-        var ty=/webm/i.test(file.type+file.name)?"video/webm":(/mp4|m4a|aac/i.test(file.type+file.name)?"video/mp4":file.type);
-        try{var up=await assets.upload(file,{type:ty});songUrl=up.url}
-        catch(e2){m.textContent=(e2&&e2.code==="unsupported_type")?"That audio format isn’t supported. Please try an .m4a file 🥺":"Couldn’t upload the song. Try a smaller .m4a clip 🥺";$("bKirim").disabled=false;return}
+        var ext=(file.name.split(".").pop()||"mp3").replace(/[^a-z0-9]/gi,"").toLowerCase();var nm=Date.now()+"-"+Math.random().toString(36).slice(2,8)+"."+ext;
+        try{var up=await sb("/storage/v1/object/songs/"+nm,{method:"POST",headers:{"Content-Type":file.type||"audio/mpeg"},body:file});if(!up.ok)throw 0;songUrl=SB_URL+"/storage/v1/object/public/songs/"+nm}
+        catch(e2){m.textContent="Couldn’t upload the song. Try a smaller clip 🥺";$("bKirim").disabled=false;return}
       }
-      await db.collection("letters").add({key:norm(to),to:to,from:fr,body:body,color:color,stamp:stamp,songUrl:songUrl,songLink:sl,at:Date.now(),reports:0});
-      ["body","to","fr","sl"].forEach(function(k){$(k).value=""});$("cnt").textContent="0/1000";file=null;$("sf").value="";$("sfn").textContent="🎧 Attach an audio clip (.m4a recommended, max 8 MB)";
+      var ins=await sb("/rest/v1/letters",{method:"POST",headers:{"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({name_key:norm(to),to_name:to,from_name:fr,body:body,color:color,stamp:stamp,song_url:songUrl,song_link:sl,at:Date.now(),reports:0})});if(!ins.ok)throw 0;
+      ["body","to","fr","sl"].forEach(function(k){$(k).value=""});$("cnt").textContent="0/1000";file=null;$("sf").value="";$("sfn").textContent="🎧 Attach an audio clip (mp3 or m4a, max 8 MB)";
       if(!rm){var f=document.createElement("div");f.className="fly";f.textContent="💌";document.body.appendChild(f);setTimeout(function(){f.remove()},1200)}
       burst(x,y,["💗","✨","🌸","🕊️"]);m.textContent="Sent! Your envelope is flying away 🕊️💗";
-    }catch(e){m.textContent="Couldn’t send. Check your Contributor access and try again 🥺"}
+    }catch(e){m.textContent="Couldn’t send. Please try again 🥺"}
     $("bKirim").disabled=false;
   };
 })();
