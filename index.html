@@ -142,6 +142,7 @@ textarea{min-height:140px;resize:vertical}
 
   (async function(){
     try{
+      for(var k=0;k<60&&!window.claude;k++)await new Promise(function(r){setTimeout(r,100)});
       if(!window.claude)return noDb();
       db=await claude.use("db");var u=await claude.use("user");
       try{assets=await claude.use("assets")}catch(e){assets=null}
@@ -149,7 +150,7 @@ textarea{min-height:140px;resize:vertical}
       if(!db)noDb();else if(!canWrite){$("mKirim").textContent="Your account is read-only. Ask for Contributor access to send letters 🥺";$("bKirim").disabled=true}
     }catch(e){noDb()}
   })();
-  function noDb(){db=null;$("mCari").textContent="The database isn’t active here. Please open this page through its claude.ai link 🥺";$("bCari").disabled=true;$("bKirim").disabled=true}
+  function noDb(){db=null;$("mCari").textContent="The database isn’t active here. Please open this page through its claude.ai link 🥺";$("mKirim").textContent="Sending isn’t available in this view 🥺 Open the page from its claude.ai link while logged in, then refresh.";$("bCari").disabled=true;$("bKirim").disabled=true}
 
   function embedOf(link){try{var u=new URL(link),h=u.hostname,p=u.pathname,m;
     if(/(^|\.)youtube\.com$/.test(h)&&(m=u.searchParams.get("v")))return{s:"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(m)+"?autoplay=1&end=30&playsinline=1",h:200};
