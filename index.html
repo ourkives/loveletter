@@ -119,7 +119,7 @@ textarea{min-height:140px;resize:vertical}
 <script>
 (function(){
   var $=function(i){return document.getElementById(i)};
-  var SB_URL="https://sbyphkaquoribzjbqvja.supabase.co",SB_KEY="sb_publishable_ZOG74XrcTdg3PHzcWPZJ0g_31WQHQZc"; // <- fill these in
+  var SB_URL="https://sbyphkaquoribzjbqvja.supabase.co",SB_KEY="sb_publishable_ZOG74XrcTdg3PHzcWPZJ0g_31WQHQZc";
   function sb(p,o){o=o||{};o.headers=Object.assign({apikey:SB_KEY},SB_KEY.indexOf("eyJ")===0?{Authorization:"Bearer "+SB_KEY}:{},o.headers||{});return fetch(SB_URL+p,o)}
   var db=null,assets=null,canWrite=true,color="c1",stamp="💖",file=null,cur=null;
   var EM=["💖","🌸","🍀","⭐","🐱","🌈","🍓","🦋"],COLS=["c1","c2","c3","c4"];
@@ -223,11 +223,11 @@ textarea{min-height:140px;resize:vertical}
         try{var up=await sb("/storage/v1/object/songs/"+nm,{method:"POST",headers:{"Content-Type":file.type||"audio/mpeg"},body:file});if(!up.ok)throw 0;songUrl=SB_URL+"/storage/v1/object/public/songs/"+nm}
         catch(e2){m.textContent="Couldn’t upload the song. Try a smaller clip 🥺";$("bKirim").disabled=false;return}
       }
-      var ins=await sb("/rest/v1/letters",{method:"POST",headers:{"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({name_key:norm(to),to_name:to,from_name:fr,body:body,color:color,stamp:stamp,song_url:songUrl,song_link:sl,at:Date.now(),reports:0})});if(!ins.ok)throw 0;
+      var ins=await sb("/rest/v1/letters",{method:"POST",headers:{"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({name_key:norm(to),to_name:to,from_name:fr,body:body,color:color,stamp:stamp,song_url:songUrl,song_link:sl,at:Date.now(),reports:0})});if(!ins.ok){throw new Error(ins.status+" "+(await ins.text()).slice(0,220))}
       ["body","to","fr","sl"].forEach(function(k){$(k).value=""});$("cnt").textContent="0/1000";file=null;$("sf").value="";$("sfn").textContent="🎧 Attach an audio clip (mp3 or m4a, max 8 MB)";
       if(!rm){var f=document.createElement("div");f.className="fly";f.textContent="💌";document.body.appendChild(f);setTimeout(function(){f.remove()},1200)}
       burst(x,y,["💗","✨","🌸","🕊️"]);m.textContent="Sent! Your envelope is flying away 🕊️💗";
-    }catch(e){m.textContent="Couldn’t send. Please try again 🥺"}
+    }catch(e){m.textContent="Couldn’t send 🥺 "+(e&&e.message?e.message:"")}
     $("bKirim").disabled=false;
   };
 })();
