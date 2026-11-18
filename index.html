@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mirrors of Midnight</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Caveat:wght@600&display=swap">
+<style>
+:root{--bg:#ffeef4;--bg2:#e9f0ff;--ink:#4a3548;--mute:#9a8499;--card:#fffafc;--line:#f6cfe0;--accent:#ff7eb0;--accent2:#b79cff;--on:#fff;--c1:#fff3c4;--c2:#ffd9e6;--c3:#d6f5df;--c4:#d9e6ff;--sh:rgba(255,126,176,.25);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1f30;--bg2:#1f2540;--ink:#fbe9f3;--mute:#b79cb5;--card:#392a40;--line:#5a4166;--accent:#ff8fbd;--accent2:#a58cff;--on:#2a1f30;--c1:#5a5030;--c2:#5e3347;--c3:#2f5340;--c4:#33456b;--sh:rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{--bg:#2a1f30;--bg2:#1f2540;--ink:#fbe9f3;--mute:#b79cb5;--card:#392a40;--line:#5a4166;--accent:#ff8fbd;--accent2:#a58cff;--on:#2a1f30;--c1:#5a5030;--c2:#5e3347;--c3:#2f5340;--c4:#33456b;--sh:rgba(0,0,0,.35)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(160deg,var(--bg),var(--bg2));color:var(--ink);font-family:Quicksand,system-ui,"Segoe UI",sans-serif;font-weight:500;overflow-x:hidden}
+.fl{position:fixed;bottom:-40px;font-size:22px;opacity:.55;animation:up linear infinite;pointer-events:none;z-index:0}
+@keyframes up{to{transform:translateY(-110vh) rotate(40deg);opacity:0}}
+main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:26px 16px 60px}
+.hero{text-align:center;margin-bottom:18px}
+.mascot{font-size:56px;display:inline-block;animation:bob 2.2s ease-in-out infinite;cursor:pointer;user-select:none}
+.mascot:active{transform:scale(1.3) rotate(-10deg)}
+@keyframes bob{50%{transform:translateY(-8px) rotate(4deg)}}
+h1{font-family:Caveat,cursive;font-size:2.6rem;margin:0;color:var(--accent)}
+.sub{color:var(--mute);margin:2px 0 0;font-size:.95rem}
+.tabs{display:flex;background:var(--card);border-radius:999px;padding:5px;margin:18px 0;box-shadow:0 4px 14px var(--sh)}
+.tabs button{flex:1;padding:11px;border:0;background:none;color:var(--mute);border-radius:999px;font:700 .95rem Quicksand,system-ui,sans-serif;cursor:pointer;transition:.25s}
+.tabs button.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on);transform:scale(1.03)}
+.box{background:var(--card);border-radius:24px;padding:20px;box-shadow:0 8px 24px var(--sh);animation:pop .4s}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+label{display:block;font-weight:700;font-size:.85rem;margin:14px 0 6px}
+input,textarea{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:16px;background:var(--bg);color:var(--ink);font:500 1rem Quicksand,system-ui,sans-serif;outline:0;transition:.2s}
+input:focus,textarea:focus{border-color:var(--accent);transform:scale(1.01)}
+textarea{min-height:140px;resize:vertical}
+.cnt{text-align:right;font-size:.75rem;color:var(--mute)}
+.row{display:flex;gap:8px}
+.go{padding:12px 20px;border:0;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on);font:700 1rem Quicksand,system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 12px var(--sh);transition:.2s}
+.go:hover{transform:translateY(-2px) scale(1.04)}.go:active{transform:scale(.95)}.go:disabled{opacity:.5}
+.big{width:100%;margin-top:16px}
+.pick{display:flex;gap:8px;flex-wrap:wrap}
+.pick button{width:40px;height:40px;border-radius:50%;border:3px solid transparent;font-size:20px;background:var(--bg);cursor:pointer;transition:.2s}
+.pick button.on{border-color:var(--accent);transform:scale(1.2) rotate(-8deg)}
+.pick.cl button{width:34px;height:34px}
+.msg{font-size:.88rem;margin-top:12px;color:var(--mute);text-align:center}
+.env{margin-top:18px;cursor:pointer;animation:pop .45s backwards}
+.env .top{position:relative;border-radius:16px;padding:18px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 16px var(--sh);transition:.25s}
+.env:hover .top{transform:translateY(-3px) rotate(-.6deg)}
+.env .top:after{content:"";position:absolute;inset:0;border-radius:16px;background:linear-gradient(to bottom right,transparent 49%,rgba(255,255,255,.35) 50%) ;pointer-events:none;opacity:.5}
+.st{font-size:30px}.who b{display:block}.who small{color:var(--mute)}
+.paper{max-height:0;overflow:hidden;transition:max-height .6s ease,margin .4s}
+.env.open .paper{max-height:900px;margin-top:-6px}
+.in{border-radius:6px 6px 16px 16px;padding:20px 20px 14px;font-family:Caveat,cursive;font-size:1.45rem;line-height:1.35;white-space:pre-wrap;word-wrap:break-word;background-image:repeating-linear-gradient(transparent 0 31px,rgba(0,0,0,.06) 31px 32px);box-shadow:0 6px 16px var(--sh)}
+.meta{display:flex;justify-content:space-between;font:500 .8rem Quicksand,system-ui,sans-serif;color:var(--mute);margin-top:10px;white-space:normal}
+.meta button{background:none;border:0;color:var(--mute);cursor:pointer;text-decoration:underline;font:inherit}
+.c1{background-color:var(--c1)}.c2{background-color:var(--c2)}.c3{background-color:var(--c3)}.c4{background-color:var(--c4)}
+.hint{text-align:center;font-size:.78rem;color:var(--mute);margin-top:28px}
+.fly{position:fixed;left:50%;top:60%;font-size:60px;z-index:9;pointer-events:none;animation:fly 1.1s ease-in forwards}
+@keyframes fly{to{transform:translate(60vw,-90vh) rotate(30deg) scale(.3);opacity:0}}
+.cf{position:fixed;z-index:9;pointer-events:none;font-size:22px;animation:cf 1.2s ease-out forwards}
+@keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(360deg);opacity:0}}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.top-bar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{display:flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none}
+.logo svg{width:44px;height:44px;flex:none}
+.logo span{font-family:Caveat,cursive;font-size:1.5rem;line-height:1;color:var(--accent)}
+.logo small{display:block;font:700 .62rem Quicksand,system-ui,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-top:3px}
+.cbtn{padding:10px 16px}
+.back{background:none;border:0;color:var(--mute);font:700 .9rem Quicksand,system-ui,sans-serif;cursor:pointer;margin-bottom:10px}
+.song{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.45);font-family:Quicksand,system-ui,sans-serif;white-space:normal}
+:root[data-theme="dark"] .song{background:rgba(0,0,0,.2)}
+.song .pl{width:40px;height:40px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on);font-size:16px;cursor:pointer;flex:none}
+.song .tx{flex:1;min-width:0;font-size:.85rem}.song .tx b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{height:5px;border-radius:5px;background:var(--line);margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--accent)}
+.fileb{display:block;padding:12px;border:2px dashed var(--line);border-radius:16px;text-align:center;cursor:pointer;color:var(--mute);font-size:.9rem}
+.fileb input{display:none}
+.hero{display:none}
+</style>
+</head>
+<body>
+<main>
+  <div class="top-bar">
+    <a class="logo" href="#" id="home" aria-label="Mirrors of Midnight">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7eb0"/><stop offset="1" stop-color="#b79cff"/></linearGradient></defs><ellipse cx="32" cy="29" rx="21" ry="25" fill="#2a1f4a" stroke="url(#g)" stroke-width="4"/><path d="M38 14a15 15 0 1 0 6 26a12 12 0 0 1-6-26z" fill="#ffe9a8"/><circle cx="22" cy="20" r="1.8" fill="#fff"/><circle cx="44" cy="22" r="1.4" fill="#fff"/><circle cx="26" cy="44" r="1.2" fill="#fff"/><path d="M26 54h12l-3 7H29z" fill="url(#g)"/></svg>
+      <div><span>Mirrors of Midnight</span><small>anonymous letters</small></div>
+    </a>
+    <button class="go cbtn" id="tKirim">✏️ Create</button>
+  </div>
+
+  <section id="pCari" style="margin-top:22px">
+    <div class="box">
+      <label for="q" style="margin-top:0">What’s your name? 🌙</label>
+      <div class="row"><input id="q" placeholder="e.g. Rani" maxlength="40" autocomplete="off"><button class="go" id="bCari">Search 👀</button></div>
+      <div class="msg" id="mCari">Type the name exactly as the sender would have written it (not case-sensitive).</div>
+    </div>
+    <div id="hasil"></div>
+  </section>
+
+  <section id="pKirim" hidden style="margin-top:22px">
+    <button class="back" id="bBack">← Back to search</button>
+    <div class="box">
+      <label for="to" style="margin-top:0">Who is it for? 💗</label>
+      <input id="to" placeholder="Recipient’s name" maxlength="40" autocomplete="off">
+      <label for="fr">Sign it (optional)</label>
+      <input id="fr" placeholder="e.g. A secret admirer, Your old deskmate" maxlength="40">
+      <label for="body">Your letter</label>
+      <textarea id="body" maxlength="1000" placeholder="Hi… there’s something I’ve been meaning to say…"></textarea>
+      <div class="cnt" id="cnt">0/1000</div>
+      <label>Sticker</label><div class="pick" id="stk"></div>
+      <label>Paper color</label><div class="pick cl" id="cols"></div>
+      <label>Add a song 🎵 (optional)</label>
+      <input id="sl" placeholder="Song link (Spotify, YouTube, Apple Music, SoundCloud)" maxlength="300" style="margin-top:8px">
+      <label class="fileb" style="margin-top:8px"><input type="file" id="sf" accept="audio/*,.m4a,.mp4,.webm"><span id="sfn">🎧 Attach an audio clip (.m4a recommended, max 8 MB)</span></label>
+      <div class="cnt">Recipients hear a 30-second preview. Please only share clips you have the right to share.</div>
+      <button class="go big" id="bKirim">Send letter 🕊️</button>
+      <div class="msg" id="mKirim">Your identity is never saved. Keep it kind, and no links please.</div>
+    </div>
+  </section>
+  <p class="hint">Letters reported 3 times are hidden automatically 🙈</p>
+</main>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var db=null,assets=null,canWrite=true,color="c1",stamp="💖",file=null,cur=null;
+  var EM=["💖","🌸","🍀","⭐","🐱","🌈","🍓","🦋"],COLS=["c1","c2","c3","c4"];
+  var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  if(!rm){var fe=["💗","✨","🌸","🌙","⭐"];for(var i=0;i<10;i++){var f=document.createElement("span");f.className="fl";f.textContent=fe[i%5];f.style.left=(i*10+Math.random()*6)+"%";f.style.animationDuration=(9+Math.random()*9)+"s";f.style.animationDelay=(-Math.random()*12)+"s";document.body.appendChild(f)}}
+  function burst(x,y,set){if(rm)return;for(var i=0;i<16;i++){var s=document.createElement("span");s.className="cf";s.textContent=set[i%set.length];s.style.left=x+"px";s.style.top=y+"px";s.style.setProperty("--x",(Math.random()*240-120)+"px");s.style.setProperty("--y",(Math.random()*-220-20)+"px");document.body.appendChild(s);setTimeout(function(e){e.remove()},1300,s)}}
+
+  function mk(list,box,cu,fn,isCol){list.forEach(function(v){var b=document.createElement("button");if(isCol)b.style.background="var(--"+v+")";else b.textContent=v;if(v===cu)b.className="on";b.onclick=function(){[].forEach.call(box.children,function(x){x.className=""});b.className="on";fn(v)};box.appendChild(b)})}
+  mk(EM,$("stk"),stamp,function(v){stamp=v});mk(COLS,$("cols"),color,function(v){color=v},true);
+  $("body").oninput=function(){$("cnt").textContent=this.value.length+"/1000"};
+
+  function show(t){$("pCari").hidden=t!=="cari";$("pKirim").hidden=t!=="kirim";$("tKirim").hidden=t==="kirim";if(cur){cur.pause();}}
+  $("tKirim").onclick=function(){show("kirim")};$("bBack").onclick=function(){show("cari")};
+  $("home").onclick=function(e){e.preventDefault();show("cari")};
+  function norm(s){return String(s||"").toLowerCase().replace(/\s+/g," ").trim()}
+
+  $("sf").onchange=function(){var f=this.files[0];file=null;
+    if(!f){$("sfn").textContent="🎧 Attach an audio clip (.m4a recommended, max 8 MB)";return}
+    if(f.size>8*1024*1024){$("sfn").textContent="That file is over 8 MB 🥺 Pick a smaller clip.";this.value="";return}
+    file=f;$("sfn").textContent="🎧 "+f.name};
+
+  (async function(){
+    try{
+      if(!window.claude)return noDb();
+      db=await claude.use("db");var u=await claude.use("user");
+      try{assets=await claude.use("assets")}catch(e){assets=null}
+      if(u&&u.can&&(await u.can("data.write"))===false)canWrite=false;
+      if(!db)noDb();else if(!canWrite){$("mKirim").textContent="Your account is read-only. Ask for Contributor access to send letters 🥺";$("bKirim").disabled=true}
+    }catch(e){noDb()}
+  })();
+  function noDb(){db=null;$("mCari").textContent="The database isn’t active here. Please open this page through its claude.ai link 🥺";$("bCari").disabled=true;$("bKirim").disabled=true}
+
+  function embedOf(link){try{var u=new URL(link),h=u.hostname,p=u.pathname,m;
+    if(/(^|\.)youtube\.com$/.test(h)&&(m=u.searchParams.get("v")))return{s:"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(m)+"?autoplay=1&end=30&playsinline=1",h:200};
+    if(h==="youtu.be"&&(m=p.slice(1)))return{s:"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(m)+"?autoplay=1&end=30&playsinline=1",h:200};
+    if(h==="open.spotify.com"&&(m=p.match(/\/(track|album|playlist|episode)\/([A-Za-z0-9]+)/)))return{s:"https://open.spotify.com/embed/"+m[1]+"/"+m[2],h:152};
+    if(/(^|\.)soundcloud\.com$/.test(h))return{s:"https://w.soundcloud.com/player/?auto_play=true&url="+encodeURIComponent(link),h:166};
+    if(h==="music.apple.com")return{s:"https://embed.music.apple.com"+p+u.search,h:175};
+  }catch(e){}return null}
+  function player(l){
+    var w=document.createElement("div");w.className="song";
+    var pl=document.createElement("button");pl.className="pl";pl.textContent=l.songUrl?"▶":(l.songLink?"↗":"🎵");
+    var tx=document.createElement("div");tx.className="tx";var b=document.createElement("b");b.textContent=l.songTitle||"A song for you";
+    var a=document.createElement("span");a.textContent=l.songArtist||"";tx.appendChild(b);tx.appendChild(a);
+    var bar=document.createElement("div");bar.className="bar";var fill=document.createElement("i");bar.appendChild(fill);tx.appendChild(bar);
+    w.appendChild(pl);w.appendChild(tx);
+    if(!l.songUrl&&l.songLink){var okl=false;try{okl=new URL(l.songLink).protocol==="https:"}catch(e4){}
+      pl.title="Open song";if(okl)pl.onclick=function(ev){ev.stopPropagation();window.open(l.songLink,"_blank","noopener")};else pl.textContent="🎵"}
+    if(l.songUrl){var au=null;
+      pl.onclick=function(ev){ev.stopPropagation();
+        if(!au){au=new Audio(l.songUrl);au.ontimeupdate=function(){var p=Math.min(au.currentTime/30,1);fill.style.width=(p*100)+"%";if(au.currentTime>=30){au.pause();au.currentTime=0;pl.textContent="▶";fill.style.width="0"}};au.onended=function(){pl.textContent="▶"};au.onerror=function(){pl.textContent="⚠️";a.textContent="Couldn’t play this clip"}}
+        if(au.paused){if(cur&&cur!==au)cur.pause();cur=au;au.play().then(function(){pl.textContent="⏸"}).catch(function(){pl.textContent="⚠️"})}else{au.pause();pl.textContent="▶"}
+        au.onpause=function(){if(pl.textContent==="⏸")pl.textContent="▶"};
+      };
+    }
+    var done=false;
+    if(l.songUrl)w.auto=function(){if(done)return;done=true;try{pl.onclick(new Event("click"))}catch(e){}};
+    else if(l.songLink){var em=embedOf(l.songLink);if(em)w.auto=function(){if(w.f)return;var f=document.createElement("iframe");w.f=f;f.src=em.s;f.allow="autoplay; encrypted-media";f.setAttribute("referrerpolicy","strict-origin-when-cross-origin");f.style.cssText="width:100%;border:0;border-radius:12px;margin-top:8px;height:"+em.h+"px";w.parentNode.insertBefore(f,w.nextSibling)}}
+    w.onclick=function(e){e.stopPropagation()};return w;
+  }
+
+  function render(list,name){
+    var out=$("hasil");out.textContent="";
+    if(!list.length){$("mCari").textContent="No letters for “"+name+"” yet… check back later 🌙";return}
+    $("mCari").textContent=list.length+(list.length>1?" letters are":" letter is")+" waiting for you! Tap an envelope 💌";
+    list.forEach(function(l,i){
+      var e=document.createElement("div");e.className="env";e.style.animationDelay=(i*.08)+"s";
+      var tp=document.createElement("div");tp.className="top "+(l.color||"c1");
+      var st=document.createElement("div");st.className="st";st.textContent=l.stamp||"💌";
+      var w=document.createElement("div");w.className="who";
+      var b=document.createElement("b");b.textContent="From "+(l.from||"someone");
+      var sm=document.createElement("small");sm.textContent=new Date(l.at).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})+((l.songTitle||l.songUrl||l.songLink)?"  ·  🎵":"");
+      w.appendChild(b);w.appendChild(sm);tp.appendChild(st);tp.appendChild(w);
+      var pp=document.createElement("div");pp.className="paper";
+      var inn=document.createElement("div");inn.className="in "+(l.color||"c1");inn.textContent="Dear "+l.to+",\n\n"+l.body+"\n\n— "+(l.from||"Someone")+" "+(l.stamp||"");
+      if(l.songTitle||l.songUrl||l.songLink)inn.appendChild(player(l));
+      var m=document.createElement("div");m.className="meta";
+      var sp=document.createElement("span");sp.textContent="💗 hope your day is lovely";
+      var r=document.createElement("button");r.textContent="Report";
+      r.onclick=async function(ev){ev.stopPropagation();r.disabled=true;try{var ref=db.doc("letters/"+l.id);var s=await ref.get();var d=s.data();await ref.set(Object.assign({},d,{reports:(d.reports||0)+1}));r.textContent="Reported"}catch(x){r.textContent="Failed"}};
+      m.appendChild(sp);m.appendChild(r);pp.appendChild(inn);pp.appendChild(m);e.appendChild(tp);e.appendChild(pp);
+      e.onclick=function(ev){var op=e.classList.toggle("open");if(op){burst(ev.clientX,ev.clientY,["💗","✨"]);var pw=inn.querySelector(".song");if(pw&&pw.auto)pw.auto()}};
+      out.appendChild(e);
+    });
+  }
+
+  async function cari(){
+    var name=$("q").value.trim();if(!name||!db)return;
+    $("mCari").textContent="Peeking into the mailbox… 📮";$("hasil").textContent="";
+    try{var snap=await db.collection("letters").where("key","==",norm(name)).get();
+      var list=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x}).filter(function(x){return(x.reports||0)<3}).sort(function(a,b){return b.at-a.at});
+      render(list,name);
+    }catch(e){$("mCari").textContent="Couldn’t load letters. Please try again 🥺"}
+  }
+  $("bCari").onclick=cari;$("q").onkeydown=function(e){if(e.key==="Enter")cari()};
+
+  $("bKirim").onclick=async function(ev){
+    var to=$("to").value.trim(),body=$("body").value.trim(),fr=$("fr").value.trim(),m=$("mKirim"),sl=$("sl").value.trim();
+    if(!to||body.length<5){m.textContent="Please add a recipient and a message ✏️";return}
+    if(/https?:\/\/|www\./i.test(body+fr)){m.textContent="Links aren’t allowed in the letter itself 🚫 Put your song link in the song link field.";return}
+    if(sl){var ok=false;try{var uu=new URL(sl);ok=uu.protocol==="https:"&&/(^|\.)(open\.spotify\.com|spotify\.link|youtube\.com|youtu\.be|music\.apple\.com|soundcloud\.com|deezer\.com)$/i.test(uu.hostname)}catch(e3){}if(!ok){m.textContent="Please use an https link from Spotify, YouTube, Apple Music, SoundCloud or Deezer 🎶";return}}
+    $("bKirim").disabled=true;var x=ev.clientX,y=ev.clientY,songUrl="";
+    try{
+      if(file){
+        if(!assets){m.textContent="Song uploads aren’t available for your account. Send without the clip, or ask for Contributor access 🥺";$("bKirim").disabled=false;return}
+        m.textContent="Uploading your song… 🎧";
+        var ty=/webm/i.test(file.type+file.name)?"video/webm":(/mp4|m4a|aac/i.test(file.type+file.name)?"video/mp4":file.type);
+        try{var up=await assets.upload(file,{type:ty});songUrl=up.url}
+        catch(e2){m.textContent=(e2&&e2.code==="unsupported_type")?"That audio format isn’t supported. Please try an .m4a file 🥺":"Couldn’t upload the song. Try a smaller .m4a clip 🥺";$("bKirim").disabled=false;return}
+      }
+      await db.collection("letters").add({key:norm(to),to:to,from:fr,body:body,color:color,stamp:stamp,songUrl:songUrl,songLink:sl,at:Date.now(),reports:0});
+      ["body","to","fr","sl"].forEach(function(k){$(k).value=""});$("cnt").textContent="0/1000";file=null;$("sf").value="";$("sfn").textContent="🎧 Attach an audio clip (.m4a recommended, max 8 MB)";
+      if(!rm){var f=document.createElement("div");f.className="fly";f.textContent="💌";document.body.appendChild(f);setTimeout(function(){f.remove()},1200)}
+      burst(x,y,["💗","✨","🌸","🕊️"]);m.textContent="Sent! Your envelope is flying away 🕊️💗";
+    }catch(e){m.textContent="Couldn’t send. Check your Contributor access and try again 🥺"}
+    $("bKirim").disabled=false;
+  };
+})();
+</script>
+</body>
+</html>
